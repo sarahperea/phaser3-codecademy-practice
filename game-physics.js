@@ -10,7 +10,7 @@ const gameState = {};
 
 function create() {
   // Add your code below: 
-  
+  this.physics.add.sprite(150, 100, 'codey');
 }
 
 function update() {
@@ -22,10 +22,10 @@ const config = {
   height: 500,
   backgroundColor: "b9eaff",
   physics: {
-    default: 'arcade',
+    default: 'arcade', //use Arcade physics plugin
     arcade: {
-      gravity: { y: 200 },
-      enableBody: true,
+      gravity: { y: 300 },
+      debug: true
     }
   },
   scene: {
