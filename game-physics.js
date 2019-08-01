@@ -1,44 +1,50 @@
 function preload() {
-  this.load.image('bug1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_1.png');
-  this.load.image('bug2', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_2.png');
-  this.load.image('bug3', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_3.png');
-  this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/platform.png');
-  this.load.image('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/codey.png');
+  this.load.image('bug1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_1.png')
+  this.load.image('bug2', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_2.png')
+  this.load.image('bug3', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_3.png')
+  this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/platform.png')
+  this.load.image('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/codey.png')
 }
 
-const gameState = {};
+const gameState = {
+  score: 0
+};
 
 function create() {
-  gameState.player = this.physics.add.sprite(225, 440, 'codey').setScale(.5);
+  gameState.player = this.physics.add.sprite(225, 450, 'codey').setScale(.5);
   
   const platforms = this.physics.add.staticGroup();
 
   platforms.create(225, 510, 'platform');
+  
+  gameState.player.setCollideWorldBounds(true);
 
-	gameState.player.setCollideWorldBounds(true);
-  
   this.physics.add.collider(gameState.player, platforms);
- 
-  gameState.cursors = this.input.keyboard.createCursorKeys();
   
+	gameState.cursors = this.input.keyboard.createCursorKeys();
+
   const bugs = this.physics.add.group();
-  
-	function bugGen () {
+
+  function bugGen () {
     const xCoord = Math.random() * 450;
     bugs.create(xCoord, 10, 'bug1');
   }
-  
+
   const bugGenLoop = this.time.addEvent({
-    delay: 150,
+    delay: 100,
     callback: bugGen,
     callbackScope: this,
-    loop: true
+    loop: true,
   });
   
-  // Add your code below:
+  // Displays initial Score: 0 text
+  gameState.scoreText = this.add.text(195, 485, 'Score: 0', { fontSize: '15px', fill: '#000000' });
+
   this.physics.add.collider(bugs, platforms, function (bug) {
     bug.destroy();
-  })
+    gameState.score += 10;   
+    gameState.scoreText.setText(`Score: ${gameState.score}`)
+  });
 }
 
 function update() {
@@ -68,7 +74,7 @@ const config = {
     create,
     update
   }
-};
+}
 
-const game = new Phaser.Game(config);
+const game = new Phaser.Game(config)
 
