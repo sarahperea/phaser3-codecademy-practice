@@ -11,6 +11,18 @@ function preload () {
 function create () {
   gameState.background = this.add.image(0,0,'bg');
   gameState.background.setOrigin(0,0);
+
+  renderCharacter(this, 'knight');
+}
+
+function renderCharacter (scene, key) {
+  if (gameState.character) {
+    gameState.characer.destroy();
+  }
+
+  gameState.character = scene.add.image(270,340,key);
+  gameState.character.setOrigin(.5,1);
+  gameState.character.setScale(.7);
 }
 
 function initializePage(scene) {
