@@ -52,6 +52,14 @@ function create ()
     paletteCircle.on('pointerup', function() {
       gameState.selectedColor = this.color;
     }, { color });
+
+    paletteCircle.on('pointerout', function () {
+      this.paletteCircle.strokeColor = 0x000000
+      
+      if (gameState.selectedColor === this.color) {
+        this.paletteCircle.strokeColor = 0xffc836
+      }
+    }, {paletteCircle, color});
   }
 
 }
