@@ -16,10 +16,19 @@ function create ()
     
     /* make each shape interactive here */
     shape.setInteractive();
-    /* add a pointerup handler here */
+    
+    // Changes color of shape to selected color
     shape.on('pointerup', function () {
       this.fillColor = gameState.selectedColor;
     })
+
+    // Changes shape blend mode on pointerover and pointerout
+    shape.on('pointerover', function () {
+      this.setBlendMode(Phaser.BlendModes.SCREEN);
+    });
+    shape.on('pointerout', function () {
+      this.setBlendMode(Phaser.BlendModes.NORMAL)
+    });
   }
 
   // Setting up palette circles
