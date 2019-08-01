@@ -8,6 +8,11 @@ function preload () {
   this.load.image('wizard', 'https://s3.amazonaws.com/codecademy-content/projects/learn-phaser/cyoa/wizard.png');
 }
 
+function create () {
+  gameState.background = this.add.image(0,0,'bg');
+  gameState.background.setOrigin(0,0);
+}
+
 function initializePage(scene) {
   // create options list and background
   // and saves them into gameState
