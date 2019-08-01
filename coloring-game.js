@@ -853,3 +853,15 @@ new Phaser.Math.Vector2(33.013048,41.6815302)));
 }
 
 
+/************************************* NEXT STEPS ***************************************/
+
+/*
+ * If you want to build on this game think about ways you could:
+ *
+ * Add a new color to the palette.
+ * Color in the background as well as the pegasus.
+ * Put the palette on the top, or down the side of the game.
+ * Color in a set of different shapes that you supply (you can use sprites or images instead of curves built into Phaser).
+ * Add music.
+ * Anything else you come up with to update and improve the game!
+ */
