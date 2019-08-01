@@ -1,26 +1,36 @@
 function preload() {
-  this.load.image('bug1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_1.png');
-  this.load.image('bug2', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_2.png');
-  this.load.image('bug3', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_3.png');
-  this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/platform.png');
-  this.load.image('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/codey.png');
+  this.load.image('bug1', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_1.png')
+  this.load.image('bug2', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_2.png')
+  this.load.image('bug3', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/bug_3.png')
+  this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/platform.png')
+  this.load.image('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/physics/codey.png')
 }
 
-const gameState = {};
+const gameState = {}
 
 function create() {
-  gameState.player = this.physics.add.sprite(225, 440, 'codey').setScale(.5);
+  gameState.player = this.physics.add.sprite(225, 450, 'codey').setScale(.5);
   
   const platforms = this.physics.add.staticGroup();
 
   platforms.create(225, 510, 'platform');
 
-  // Add your code below:
-  gameState.player.setCollideWorldBounds(true)
-	this.physics.add.collider(gameState.player, platforms);
+  gameState.player.setCollideWorldBounds(true);
+
+  this.physics.add.collider(gameState.player, platforms);
+  
+  gameState.cursors = this.input.keyboard.createCursorKeys();
 }
 
 function update() {
+  // Add your conditional statements below:
+  if (gameState.cursors.left.isDown) {
+    gameState.player.setVelocityX(-160);
+  } else if (gameState.cursors.right.isDown) {
+    gameState.player.setVelocityX(160);
+  } else {
+    gameState.player.setVelocityX(0); 
+  }
 }
 
 const config = {
