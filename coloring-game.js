@@ -18,7 +18,7 @@ function create ()
     shape.setInteractive();
     /* add a pointerup handler here */
     shape.on('pointerup', function () {
-
+      this.fillColor = gameState.selectedColor;
     })
   }
 
