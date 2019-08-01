@@ -15,7 +15,7 @@ function create ()
     shape.lineWidth = 2
     
     /* make each shape interactive here */
-
+    shape.setInteractive();
     /* add a pointerup handler here */
 
   }
