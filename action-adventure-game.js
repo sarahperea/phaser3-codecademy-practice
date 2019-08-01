@@ -12,12 +12,14 @@ function create () {
   gameState.background = this.add.image(0,0,'bg');
   gameState.background.setOrigin(0,0);
 
-  renderCharacter(this, 'knight');
+  initializePage(this);
+  const firstPage = fetchPage(1);
+  displayPage(this, firstPage);
 }
 
 function renderCharacter (scene, key) {
   if (gameState.character) {
-    gameState.characer.destroy();
+    gameState.character.destroy();
   }
 
   gameState.character = scene.add.image(270,340,key);
@@ -90,8 +92,18 @@ function displayPage(scene, page) {
 
     // add in gameplay functionality
     // for options here
-
-
+	  optionBox.setInteractive();
+    optionBox.on('pointerup', function() {
+      const newPage = this.option.nextPage;
+      if (newPage !== undefined) {
+        destroyPage();
+        displayPage(scene, fetchPage(newPage));
+      }
+    }, { option });
+    gameState.options.push({
+      optionBox,
+      optionText
+    });
   }
 }
 
@@ -103,7 +115,7 @@ const config = {
   height: 550,
   scene: {
     preload,
-    create,
+    create
   }
 };
 
