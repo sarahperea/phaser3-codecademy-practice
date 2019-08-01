@@ -17,7 +17,9 @@ function create ()
     /* make each shape interactive here */
     shape.setInteractive();
     /* add a pointerup handler here */
+    shape.on('pointerup', function () {
 
+    })
   }
 
   // Setting up palette circles
