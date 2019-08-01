@@ -28,13 +28,17 @@ function create() {
     bugs.create(xCoord, 10, 'bug1');
   }
   
-  // Add your code below:
   const bugGenLoop = this.time.addEvent({
     delay: 150,
     callback: bugGen,
     callbackScope: this,
     loop: true
   });
+  
+  // Add your code below:
+  this.physics.add.collider(bugs, platforms, function (bug) {
+    bug.destroy();
+  })
 }
 
 function update() {
