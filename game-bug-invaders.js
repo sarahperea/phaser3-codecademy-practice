@@ -101,6 +101,15 @@ Phaser.Utils.Array.GetRandom(gameState.enemies.getChildren());
       fontSize: '15px', fill: '#00000'
     })
   })
+  
+  gameState.bugRepellent = this.physics.add.group();
+  
+  this.physics.add.collider(gameState.bugRepellent, gameState.enemies, 
+(bug, repellent) => {
+    bug.destroy();
+    repellent.destroy();
+    gameState.scoreText.setText(`Bugs Left: ${numOfTotalEnemies()}`)
+  })
 }
 
 function update() {
@@ -118,6 +127,8 @@ function update() {
 		if 
 (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) {
 			
+gameState.bugRepellent.create(gameState.player.x, gameState.player.y, 
+'bugRepellent').setVelocityY(-400);
 		}
 
 		// Add logic for winning condition and enemy movements 
