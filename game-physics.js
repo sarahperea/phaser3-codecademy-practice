@@ -28,9 +28,9 @@ function create() {
 
   gameState.player.setCollideWorldBounds(true);
 
-  this.physics.add.collider(gameState.player, platforms)
+  this.physics.add.collider(gameState.player, platforms);
   
-  	gameState.cursors = this.input.keyboard.createCursorKeys();
+	gameState.cursors = this.input.keyboard.createCursorKeys();
 
   const bugs = this.physics.add.group();
 
@@ -50,15 +50,22 @@ function create() {
     bug.destroy();
     gameState.score += 10;
     gameState.scoreText.setText(`Score: ${gameState.score}`)
-  })
+  });
   
-  // Add your code below:
-	this.physics.add.collider(gameState.player, bugs, () => {
+  this.physics.add.collider(gameState.player, bugs, () => {
     bugGenLoop.destroy();
     this.physics.pause();
-    const gameOverText = this.add.text(200,250, 'Game Over', { fontSize: 
-'15px', fill: '#000000' })
-  })
+    this.add.text(180, 250, 'Game Over', { fontSize: '15px', fill: 
+'#000000' });
+    this.add.text(152, 270, 'Click to Restart', { fontSize: '15px', 
+fill: '#000000' });
+    
+		// Add your code below:
+		this.input.on('pointerup', () => {
+      gameState.score = 0;
+      this.scene.restart();
+    })
+  });
 }
 
 function update() {
