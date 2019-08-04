@@ -159,4 +159,11 @@ const config = {
 const game = new Phaser.Game(config);
 
 
+/******************* NEXT STEPS *********************/
+/*
+ * Create a jump animation for Codey.
+ * Add more tween callbacks, make use of onStart.
+ * Provide gameState.exit with a tween.
+ * Create another level (Scene) with new animations and tweens.
+ */
 
