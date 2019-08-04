@@ -27,8 +27,10 @@ class Level extends Phaser.Scene {
     this.createAnimations();
 
     // set Cameras here
-
-
+    this.cameras.main.setBounds(0, 0, gameState.width, gameState.height)
+    this.physics.world.setBounds(0, 0, gameState.width, gameState.height);
+    this.cameras.main.startFollow(gameState.player, true, 0.5, 0.5);
+    
     gameState.player.setCollideWorldBounds(true);
 
     this.physics.add.collider(gameState.player, gameState.platforms);
