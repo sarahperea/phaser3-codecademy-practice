@@ -24,8 +24,8 @@ class Level extends Phaser.Scene {
   create() {
     gameState.active = true
 
-    // Create gameState.bgColor here!
-		gameState.bgColor = this.add.rectangle(0,0,config.width,config.height).setOrigin(0,0);
+    gameState.bgColor = this.add.rectangle(0, 0, config.width, config.height, 0x00ffbb).setOrigin(0, 0);
+
     this.createParallaxBackgrounds();
 
     gameState.player = this.physics.add.sprite(125, 110, 'codey').setScale(.5);
@@ -102,9 +102,7 @@ class Level extends Phaser.Scene {
     const bg2_width = gameState.bg2.getBounds().width
     const bg3_width = gameState.bg3.getBounds().width
 
-    if (gameState.bgColor) {
-    	gameState.bgColor .setScrollFactor(0);
-    }
+    gameState.bgColor .setScrollFactor(0);
     gameState.bg1.setScrollFactor((bg1_width - window_width) / (game_width - window_width));
     gameState.bg2.setScrollFactor((bg2_width - window_width) / (game_width - window_width));
   }
@@ -114,6 +112,7 @@ class Level extends Phaser.Scene {
       this.createPlatform(xIndex, yIndex);
     } 
     
+    // Create the campfire at the end of the level
     gameState.goal = this.physics.add.sprite(gameState.width - 40, 100, 'campfire');
 
     this.physics.add.overlap(gameState.player, gameState.goal, function() {
@@ -165,26 +164,38 @@ class Level extends Phaser.Scene {
 
   setWeather(weather) {
     const weathers = {
+
       'morning': {
+        'color': 0xecdccc,
         'bgColor': 0xF8c3aC,
       },
 
       'afternoon': {
+        'color': 0xffffff,
         'bgColor': 0x0571FF,
       },
 
       'twilight': {
+        'color': 0xccaacc,
         'bgColor': 0x18235C,
       },
 
       'night': {
+        'color': 0x555555,
         'bgColor': 0x000000,
       },
     }
-    if (weather) {
-      let { bgColor } = weathers[weather];
-      // Update gameState.bgColor.fillColor here!
-	    gameState.bgColor.fillColor = bgColor;      
+    let { color, bgColor } = weathers[weather];
+    gameState.bgColor.fillColor = bgColor;
+
+    // Add .setTint() for all the GameObjects here!
+		gameState.bg1.setTint(color);
+    gameState.bg2.setTint(color);
+    gameState.bg3.setTint(color);
+    gameState.player.setTint(color);
+  
+    for (let platform of gameState.platforms.getChildren()) {
+      platform.setTint(color);
     }
   }
 }
@@ -193,7 +204,6 @@ class Level1 extends Level {
   constructor() {
     super('Level1')
     this.heights = [4, 7, 5, null, 5, 4, null, 4, 4];
-    // Add Level1 weather here
     this.weather = 'afternoon';
   }
 }
@@ -202,9 +212,7 @@ class Level2 extends Level {
   constructor() {
     super('Level2')
     this.heights = [5, 4, null, 4, 6, 4, 6, 5, 5];
-    // Add Level2 weather here
     this.weather = 'twilight';
-    
   }
 }
 
@@ -212,6 +220,7 @@ class Level3 extends Level {
   constructor() {
     super('Level3')
     this.heights = [6, null, 6, 4, 6, 4, 5, null, 4];
+    this.weather = 'night';
   }
 }
 
@@ -219,6 +228,7 @@ class Level4 extends Level {
   constructor() {
     super('Level4')
     this.heights = [4, null, 3, 6, null, 6, null, 5, 4];
+    this.weather = 'morning';
   }
 }
 
@@ -232,7 +242,7 @@ const config = {
   width: 500,
   height: 600,
   fps: {target: 60},
-  backgroundColor: "b9baff",
+  backgroundColor: "b9eaff",
   physics: {
     default: 'arcade',
     arcade: {
