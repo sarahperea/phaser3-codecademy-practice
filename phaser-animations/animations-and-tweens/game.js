@@ -10,7 +10,6 @@ class GameScene extends Phaser.Scene {
     this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/platform.png');
     this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/codey_sprite.png', { frameWidth: 72, frameHeight: 90 });
     this.load.spritesheet('snowman', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/snowman.png', { frameWidth: 50, frameHeight: 70 });
-    // Loads exit sprite sheet 
     this.load.spritesheet('exit', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/cave_exit.png', { frameWidth: 60, frameHeight: 70 });
   }
 
@@ -52,24 +51,24 @@ class GameScene extends Phaser.Scene {
 
     platforms
     this.physics.add.collider(gameState.enemy, platforms);
-    
+
     this.anims.create({
       key: 'snowmanAlert',
       frames: this.anims.generateFrameNumbers('snowman', { start: 0, end: 3 }),
       frameRate: 4,
       repeat: -1
     });
-    
+
     gameState.enemy.anims.play('snowmanAlert', true);
 
     this.physics.add.overlap(gameState.player, gameState.enemy, () => {
-      // Executes code to end to game when Codey and the snowman overlap
       this.add.text(150, 50, '      Game Over...\n  Click to play again.', { fontFamily: 'Arial', fontSize: 36, color: '#ffffff' });
       this.physics.pause();
       gameState.active = false;
       this.anims.pauseAll();
-      // Restarts the scene if a mouse click is detected
+      gameState.enemy.move.stop();
       this.input.on('pointerup', () => {
+        this.anims.resumeAll();
         this.scene.restart();
       })
     });
@@ -84,32 +83,39 @@ class GameScene extends Phaser.Scene {
     this.physics.add.collider(gameState.exit, platforms);
     gameState.exit.anims.play('glow', true);
 
-    // Adds a win condition
     this.physics.add.overlap(gameState.player, gameState.exit, () => {
       this.add.text(150, 50, 'You reached the exit!\n  Click to play again.', { fontFamily: 'Arial', fontSize: 36, color: '#ffffff' });
       this.physics.pause();
       gameState.active = false;
       this.anims.pauseAll();
-      // Add your code below for step 2:
-			gameState.enemy.move.stop();        
-      
+      gameState.enemy.move.stop();
       this.input.on('pointerup', () => {
         this.anims.resumeAll();
         this.scene.restart();
       })
     })
+
     
-    // Add your code below for step 1:
     gameState.enemy.move = this.tweens.add({
       targets: gameState.enemy,
       x: 320,
       ease: 'Linear',
       duration: 1800,
       repeat: -1,
-      yoyo: true
-    });
-    
-    
+      yoyo: true,
+      // Add your code below:
+      onRepeat: growSnowman
+    })
+
+    // Callback function to increase snowman after each tween 
+    let scaleChange = 1.1;
+    function growSnowman() {
+      if (scaleChange < 4) {
+        scaleChange += .3;
+        gameState.enemy.setScale(scaleChange);
+        gameState.enemy.y -= 15;
+      }
+    }
   }
 
   update() {
@@ -126,8 +132,8 @@ class GameScene extends Phaser.Scene {
         gameState.player.setVelocityX(0);
         gameState.player.anims.play('idle', true);
       }
-      // Codey jumps if they are touching the ground and either the space bar or up arrow key is pressed
-      if ((gameState.cursors.space.isDown || gameState.cursors.up.isDown)&& gameState.player.body.touching.down) {
+
+      if ((gameState.cursors.space.isDown || gameState.cursors.up.isDown) && gameState.player.body.touching.down) {
         gameState.player.anims.play('jump', true);
         gameState.player.setVelocityY(-800);
       }
