@@ -2,23 +2,26 @@ const gameState = {
 	score: 0
 };
 
-// Add your code below:
 class StartScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'StartScene' });
-  }
+	constructor(){
+		super({ key: 'StartScene' });
+	}
   
-  create () {
-    this.add.text(160,180,'Game Start Scene', {
-      fill: '#000000'
+  create() {
+    this.add.text(95, 250, 'Click to Start!', { fontSize: '30px', fill: '#000000' });
+    
+    this.input.on('pointerup', () => {
+      // Add your code below:
+      this.scene.stop('StartScene');
+      this.scene.start('GameScene');
+      
     });
   }
 }
 
-
 class GameScene extends Phaser.Scene {
 	constructor(){
-		super({ key: 'GameScene' })
+		super({ key: 'GameScene' });
 	}
 
 	preload() {
@@ -59,7 +62,7 @@ class GameScene extends Phaser.Scene {
 			loop: true,
 		});
 
-		this.physics.add.collider(bugs, platforms,  bug => {
+		this.physics.add.collider(bugs, platforms, bug => {
 			bug.destroy();
 			gameState.score += 10;
 			gameState.scoreText.setText(`Score: ${gameState.score}`);
