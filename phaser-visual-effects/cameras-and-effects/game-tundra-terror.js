@@ -38,13 +38,12 @@ class Level extends Phaser.Scene {
     gameState.player.setCollideWorldBounds(true);
 
     this.physics.add.collider(gameState.player, gameState.platforms);
+    this.physics.add.collider(gameState.goal, gameState.platforms);
 
     gameState.cursors = this.input.keyboard.createCursorKeys();
   }
 
   createPlatform(xIndex, yIndex) {
-    // Creates a platform evenly spaced along the two indices.
-    // If either is not a number it won't make a platform
       if (typeof yIndex === 'number' && typeof xIndex === 'number') {
         gameState.platforms.create((220 * xIndex),  yIndex * 70, 'platform').setOrigin(0, 0.5).refreshBody();
       }
@@ -85,10 +84,21 @@ class Level extends Phaser.Scene {
       this.createPlatform(xIndex, yIndex);
     } 
     
+    gameState.goal = this.physics.add.sprite(gameState.width - 40, 100, 'campfire');
+
+    this.physics.add.overlap(gameState.player, gameState.goal, function() {
+      // Add in the collider that will fade out to the next level here
+			this.cameras.main.fade(800,0,0,0,false, function(camera,progress){
+        if (progress > .9) {
+          this.scene.start(this.nextLevel[this.levelKey]);
+        }
+      });
+    }, null, this)
   }
 
   update() {
     if(gameState.active){
+      gameState.goal.anims.play('fire', true);
       if (gameState.cursors.right.isDown) {
         gameState.player.flipX = false;
         gameState.player.setVelocityX(gameState.speed);
@@ -111,7 +121,6 @@ class Level extends Phaser.Scene {
         gameState.player.anims.play('jump', true);
       }
 
-      // Check player height and add camera shake here!
       if (gameState.player.y > gameState.height) {
         this.cameras.main.shake(240, .01, false, function(camera, progress) {
           if (progress > .9) {
