@@ -11,7 +11,6 @@ class GameScene extends Phaser.Scene {
     this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/codey_sprite.png', { frameWidth: 72, frameHeight: 90 });
   }
 
-
   create() {
     gameState.active = true;
 
@@ -25,9 +24,8 @@ class GameScene extends Phaser.Scene {
       platforms.create(plat.x, plat.y, 'platform')
     });
 
-    // Add your code below:
-	  gameState.player = this.physics.add.sprite(255,500,'codey');
-    
+    gameState.player = this.physics.add.sprite(50, 500, 'codey').setScale(.8)
+
     this.anims.create({
       key: 'run',
       frames: this.anims.generateFrameNumbers('codey', { start: 0, end: 3 }),
@@ -35,13 +33,22 @@ class GameScene extends Phaser.Scene {
       repeat: -1
     });
 
-
-    // Collider object so Codey doesn't slip through the platforms
     this.physics.add.collider(gameState.player, platforms);
+    gameState.player.setCollideWorldBounds(true);
+
+    // Creates the Cursor object to check for arrow key presses
+    gameState.cursors = this.input.keyboard.createCursorKeys();
   }
 
   update() {
-
+    if (gameState.active) {
+      if (gameState.cursors.right.isDown) {
+        gameState.player.setVelocityX(350);
+        // Add your code below:
+				gameState.player.anims.play('run', true);
+        
+      }
+    }
   }
 }
 
