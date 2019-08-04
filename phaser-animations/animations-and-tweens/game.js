@@ -9,9 +9,9 @@ class GameScene extends Phaser.Scene {
     this.load.image('cave', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/cave_background.png');
     this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/platform.png');
     this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/codey_sprite.png', { frameWidth: 72, frameHeight: 90 });
-
-    // Loads in the snowman sprite sheet
     this.load.spritesheet('snowman', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/snowman.png', { frameWidth: 50, frameHeight: 70 });
+    // Loads exit sprite sheet 
+    this.load.spritesheet('exit', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/cave_exit.png', { frameWidth: 60, frameHeight: 70 });
   }
 
   create() {
@@ -48,30 +48,68 @@ class GameScene extends Phaser.Scene {
       repeat: -1
     });
 
-    // Creates the snowman sprite
-    gameState.enemy = this.physics.add.sprite(225, 500, 'snowman');
+    gameState.enemy = this.physics.add.sprite(480, 300, 'snowman');
 
-    // Creates a Collider Object between the snowman and the platforms
-    this.physics.add.collider(gameState.enemy, platforms)
-
-    // Creates an animation using the snowman sprite sheet
+    platforms
+    this.physics.add.collider(gameState.enemy, platforms);
+    
     this.anims.create({
       key: 'snowmanAlert',
       frames: this.anims.generateFrameNumbers('snowman', { start: 0, end: 3 }),
       frameRate: 4,
       repeat: -1
     });
+    
+    gameState.enemy.anims.play('snowmanAlert', true);
 
-    // Plays the snowmanAlert animation
-    gameState.enemy.anims.play('snowmanAlert', true)
-
-    // Creates an Overlap object that detects when Codey overlaps with the snowman
     this.physics.add.overlap(gameState.player, gameState.enemy, () => {
-      // Add your code below:
-			//gameState.enemy.anims.pause();
+      // Executes code to end to game when Codey and the snowman overlap
+      this.add.text(150, 50, '      Game Over...\n  Click to play again.', { fontFamily: 'Arial', fontSize: 36, color: '#ffffff' });
+      this.physics.pause();
+      gameState.active = false;
       this.anims.pauseAll();
-      
+      // Restarts the scene if a mouse click is detected
+      this.input.on('pointerup', () => {
+        this.scene.restart();
+      })
     });
+
+    gameState.exit = this.physics.add.sprite(50, 142, 'exit');
+    this.anims.create({
+      key: 'glow',
+      frames: this.anims.generateFrameNumbers('exit', { start: 0, end: 5 }),
+      frameRate: 4,
+      repeat: -1
+    });
+    this.physics.add.collider(gameState.exit, platforms);
+    gameState.exit.anims.play('glow', true);
+
+    // Adds a win condition
+    this.physics.add.overlap(gameState.player, gameState.exit, () => {
+      this.add.text(150, 50, 'You reached the exit!\n  Click to play again.', { fontFamily: 'Arial', fontSize: 36, color: '#ffffff' });
+      this.physics.pause();
+      gameState.active = false;
+      this.anims.pauseAll();
+      // Add your code below for step 2:
+			gameState.enemy.move.stop();        
+      
+      this.input.on('pointerup', () => {
+        this.anims.resumeAll();
+        this.scene.restart();
+      })
+    })
+    
+    // Add your code below for step 1:
+    gameState.enemy.move = this.tweens.add({
+      targets: gameState.enemy,
+      x: 320,
+      ease: 'Linear',
+      duration: 1800,
+      repeat: -1,
+      yoyo: true
+    });
+    
+    
   }
 
   update() {
@@ -87,6 +125,11 @@ class GameScene extends Phaser.Scene {
       } else {
         gameState.player.setVelocityX(0);
         gameState.player.anims.play('idle', true);
+      }
+      // Codey jumps if they are touching the ground and either the space bar or up arrow key is pressed
+      if ((gameState.cursors.space.isDown || gameState.cursors.up.isDown)&& gameState.player.body.touching.down) {
+        gameState.player.anims.play('jump', true);
+        gameState.player.setVelocityY(-800);
       }
     }
   }
