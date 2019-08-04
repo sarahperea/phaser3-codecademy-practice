@@ -17,12 +17,26 @@ class EndScene extends Phaser.Scene {
 
     if(score >= 70) {
       // Add the happy sprite and animation below:
-			
-			
-			
+			gameState.win = this.add.sprite(220,220,'happy');
+      this.anims.create({
+        key: 'celebrate',
+        frames: this.anims.generateFrameNames('happy',{ start: 0, end: 1 }),
+        delay: 0,
+        frameRate: 2,
+        repeat: -1
+      });
+			gameState.win.anims.play('celebrate');			
     } else {
       // Add the sad sprite and animation below:
-			
+			gameState.lose = this.add.sprite(220,220,'sad');
+      this.anims.create({
+        key: 'cry',
+        frames: this.anims.generateFrameNames('sad',{ start: 0, end: 1 }),
+        delay: 0,
+        frameRate: 2,
+        repeat: -1
+      });
+			gameState.win.anims.lose('cry');	
       
     }
 
