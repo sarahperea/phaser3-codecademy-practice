@@ -26,27 +26,46 @@ class GameScene extends Phaser.Scene {
 
     gameState.player = this.physics.add.sprite(50, 500, 'codey').setScale(.8)
 
+    this.physics.add.collider(gameState.player, platforms);
+    gameState.player.setCollideWorldBounds(true);
+
+    gameState.cursors = this.input.keyboard.createCursorKeys();
+
     this.anims.create({
       key: 'run',
       frames: this.anims.generateFrameNumbers('codey', { start: 0, end: 3 }),
       frameRate: 5,
       repeat: -1
     });
-
-    this.physics.add.collider(gameState.player, platforms);
-    gameState.player.setCollideWorldBounds(true);
-
-    // Creates the Cursor object to check for arrow key presses
-    gameState.cursors = this.input.keyboard.createCursorKeys();
+    
+    // Creates Codey's idle animation
+    this.anims.create({
+      key: 'idle',
+      frames: this.anims.generateFrameNumbers('codey', { start: 4, end: 5 }),
+      frameRate: 5,
+      repeat: -1
+    });
   }
 
   update() {
     if (gameState.active) {
       if (gameState.cursors.right.isDown) {
         gameState.player.setVelocityX(350);
-        // Add your code below:
-				gameState.player.anims.play('run', true);
+        gameState.player.anims.play('run', true);
+        // Add your code for step 2 below:
+        gameState.player.flipX = false;
+				
         
+      } else if (gameState.cursors.left.isDown) {
+        gameState.player.setVelocityX(-350);
+        gameState.player.anims.play('run', true);
+        // Add your code for step 1 below:
+	gameState.player.flipX = true;
+        
+      } else {
+        gameState.player.setVelocityX(0);
+        // Plays the idle animation if no arrow keys are pressed
+        gameState.player.anims.play('idle', true);
       }
     }
   }
@@ -57,7 +76,6 @@ const config = {
   type: Phaser.AUTO,
   width: 500,
   height: 600,
-  backgroundColor: "b9eaff",
   physics: {
     default: 'arcade',
     arcade: {
