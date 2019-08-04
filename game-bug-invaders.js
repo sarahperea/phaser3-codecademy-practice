@@ -26,6 +26,8 @@ function create() {
 	// When gameState.active is true, the game is being played and not over. When gameState.active is false, then it's game over
 	gameState.active = true;
 
+  gameState.enemyVelocity = 1;
+  
 	// When gameState.active is false, the game will listen for a pointerup event and restart when the event happens
 	this.input.on('pointerup', () => {
 		if (gameState.active === false) {
@@ -93,6 +95,16 @@ function create() {
     gameState.scoreText.setText(`Bugs Left: ${numOfTotalEnemies()}`)
   })
   
+  this.physics.add.collider(gameState.enemies, gameState.player, () => {
+    gameState.active = false;
+    gameState.enemyVelocity = 1;
+    this.physics.pause();
+    this.add.text(180,180,'Game Over!', {
+      fontSize: '15px',
+      fill: '#000000'
+    })
+  })
+  
 }
 
 function update() {
@@ -119,6 +131,19 @@ function update() {
         fontSize: '15px',
         fill: '#000000'
       });
+    } else {
+      gameState.enemies.getChildren().forEach( (elem) =>
+      {
+       elem.x += gameState.enemyVelocity; 
+        gameState.leftMostBug = sortedEnemies()[0];
+        gameState.rightMostBug = sortedEnemies()[sortedEnemies().length -1];
+      })
+      if (gameState.leftMostBug.x < 10 || gameState.rightMostBug.x > 440) {
+        gameState.enemyVelocity *= -1;
+        gameState.enemies.getChildren().forEach((elem)=>{
+          elem.y += 10;
+        })
+      }
     }
   }
 }
