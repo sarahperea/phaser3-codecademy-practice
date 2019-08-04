@@ -1,7 +1,12 @@
 class Level extends Phaser.Scene {
-  constructor() {
-    super()
-    this.heights = [4, 5]
+  constructor(key) {
+    super({key});
+    this.levelKey = key
+    this.nextLevel = {
+      'Level1': 'Level2',
+      'Level2': 'Level3',
+      'Level3': 'Level4',
+    }
   }
 
   preload() {
@@ -77,9 +82,9 @@ class Level extends Phaser.Scene {
 
   levelSetup() {
     for (const [xIndex, yIndex] of this.heights.entries()) {
-      // call createPlatform here with xIndex and yIndex
-			this.createPlatform(xIndex, yIndex)
+      this.createPlatform(xIndex, yIndex);
     } 
+    
   }
 
   update() {
@@ -106,10 +111,43 @@ class Level extends Phaser.Scene {
         gameState.player.anims.play('jump', true);
       }
 
+      // Check player height and add camera shake here!
       if (gameState.player.y > gameState.height) {
-
+        this.cameras.main.shake(240, .01, false, function(camera, progress) {
+          if (progress > .9) {
+            this.scene.restart(this.levelKey);
+          }
+        });
       }
     }
+  }
+}
+
+class Level1 extends Level {
+  constructor() {
+    super('Level1')
+    this.heights = [4, 7, 5, null, 5, 4, null, 4, 4];
+  }
+}
+
+class Level2 extends Level {
+  constructor() {
+    super('Level2')
+    this.heights = [5, 4, null, 4, 6, 4, 6, 5, 5];
+  }
+}
+
+class Level3 extends Level {
+  constructor() {
+    super('Level3')
+    this.heights = [6, null, 6, 4, 6, 4, 5, null, 4];
+  }
+}
+
+class Level4 extends Level {
+  constructor() {
+    super('Level4')
+    this.heights = [4, null, 3, 6, null, 6, null, 5, 4];
   }
 }
 
@@ -134,7 +172,7 @@ const config = {
 
     }
   },
-  scene: [Level]
+  scene: [Level1, Level2, Level3, Level4]
 };
 
 const game = new Phaser.Game(config);
