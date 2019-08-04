@@ -10,7 +10,7 @@ class GameScene extends Phaser.Scene {
     this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/platform.png');
 
     // Load in the sprite sheet below:
-		
+    this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/codey_sprite.png', { frameWidth: 72, frameHeight: 90 });		
     
   }
 
