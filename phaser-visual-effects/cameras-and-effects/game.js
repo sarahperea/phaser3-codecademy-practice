@@ -1,6 +1,7 @@
 class Level extends Phaser.Scene {
   constructor() {
     super()
+    this.heights = [4, 5]
   }
 
   preload() {
@@ -18,24 +19,30 @@ class Level extends Phaser.Scene {
   create() {
     gameState.active = true
 
-    gameState.bg3 = this.add.image(0, 0, 'bg3').setOrigin(0)
-
     gameState.player = this.physics.add.sprite(125, 110, 'codey').setScale(.5);
 
     gameState.platforms = this.physics.add.staticGroup();
 
     this.createAnimations();
+    this.levelSetup();
 
-    // set Cameras here
-    this.cameras.main.setBounds(0, 0, gameState.width, gameState.height)
-    this.physics.world.setBounds(0, 0, gameState.width, gameState.height);
-    this.cameras.main.startFollow(gameState.player, true, 0.5, 0.5);
-    
+    this.cameras.main.setBounds(0, 0, gameState.width, gameState.height);
+    this.physics.world.setBounds(0, 0, gameState.width, gameState.height + gameState.player.height);
+
+    this.cameras.main.startFollow(gameState.player, true, 0.5, 0.5)
     gameState.player.setCollideWorldBounds(true);
 
     this.physics.add.collider(gameState.player, gameState.platforms);
 
     gameState.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  createPlatform(xIndex, yIndex) {
+    // Creates a platform evenly spaced along the two indices.
+    // If either is not a number it won't make a platform
+      if (typeof yIndex === 'number' && typeof xIndex === 'number') {
+        gameState.platforms.create((220 * xIndex),  yIndex * 70, 'platform').setOrigin(0, 0.5).refreshBody();
+      }
   }
 
   createAnimations() {
@@ -68,6 +75,13 @@ class Level extends Phaser.Scene {
     })
   }
 
+  levelSetup() {
+    for (const [xIndex, yIndex] of this.heights.entries()) {
+      // call createPlatform here with xIndex and yIndex
+			this.createPlatform(xIndex, yIndex)
+    } 
+  }
+
   update() {
     if(gameState.active){
       if (gameState.cursors.right.isDown) {
@@ -81,6 +95,19 @@ class Level extends Phaser.Scene {
       } else {
         gameState.player.setVelocityX(0);
         gameState.player.anims.play('idle', true);
+      }
+
+      if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space) && gameState.player.body.touching.down) {
+        gameState.player.anims.play('jump', true);
+        gameState.player.setVelocityY(-500);
+      }
+
+      if (!gameState.player.body.touching.down){
+        gameState.player.anims.play('jump', true);
+      }
+
+      if (gameState.player.y > gameState.height) {
+
       }
     }
   }
