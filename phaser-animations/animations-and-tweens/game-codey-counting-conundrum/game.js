@@ -18,3 +18,11 @@ const config = {
 
 const game = new Phaser.Game(config);
 
+/************************ NEXT STEPS ***************************/
+/*
+ * Add a tween that plays when the correct circle is clicked.
+ * Change the “wrong” tween to temporarily show the number of the circle.
+ * Create an options screen for players:
+ * How long to display the numbers (without being blocked).
+ * How many circles/numbers to display.
+ */
