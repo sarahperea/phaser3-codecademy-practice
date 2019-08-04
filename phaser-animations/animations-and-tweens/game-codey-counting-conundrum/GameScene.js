@@ -41,8 +41,8 @@ class GameScene extends Phaser.Scene {
   update() {
     if (gameState.circles.getChildren().length === 0) {
       // Add logic to transition from GameScene to EndScene
-			
-			
+      this.scene.stop('GameScene');
+      this.scene.start('EndScene');
     }
   }
 
