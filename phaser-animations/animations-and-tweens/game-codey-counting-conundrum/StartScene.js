@@ -18,8 +18,8 @@ class StartScene extends Phaser.Scene {
 			
     this.input.on('pointerup', () => {
       // Add logic to transition from StartScene to GameScene:
-			
-			
+      this.scene.stop('StartScene');
+      this.scene.start('GameScene');
     });
 
 
