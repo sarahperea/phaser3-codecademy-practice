@@ -24,6 +24,8 @@ class Level extends Phaser.Scene {
   create() {
     gameState.active = true
 
+    this.createParallaxBackgrounds();
+
     gameState.player = this.physics.add.sprite(125, 110, 'codey').setScale(.5);
 
     gameState.platforms = this.physics.add.staticGroup();
@@ -31,8 +33,8 @@ class Level extends Phaser.Scene {
     this.createAnimations();
     this.levelSetup();
 
-    this.cameras.main.setBounds(0, 0, gameState.width, gameState.height);
-    this.physics.world.setBounds(0, 0, gameState.width, gameState.height + gameState.player.height);
+    this.cameras.main.setBounds(0, 0, gameState.bg3.width, gameState.bg3.height);
+    this.physics.world.setBounds(0, 0, gameState.width, gameState.bg3.height + gameState.player.height);
 
     this.cameras.main.startFollow(gameState.player, true, 0.5, 0.5)
     gameState.player.setCollideWorldBounds(true);
@@ -44,6 +46,8 @@ class Level extends Phaser.Scene {
   }
 
   createPlatform(xIndex, yIndex) {
+    // Creates a platform evenly spaced along the two indices.
+    // If either is not a number it won't make a platform
       if (typeof yIndex === 'number' && typeof xIndex === 'number') {
         gameState.platforms.create((220 * xIndex),  yIndex * 70, 'platform').setOrigin(0, 0.5).refreshBody();
       }
@@ -79,21 +83,45 @@ class Level extends Phaser.Scene {
     })
   }
 
+  createParallaxBackgrounds() {
+    gameState.bg1 = this.add.image(0, 0, 'bg1');
+    gameState.bg2 = this.add.image(0, 0, 'bg2');
+    gameState.bg3 = this.add.image(0, 0, 'bg3');
+
+    gameState.bg1.setOrigin(0, 0);
+    gameState.bg2.setOrigin(0, 0);
+    gameState.bg3.setOrigin(0, 0);
+
+    const game_width = parseFloat(gameState.bg3.getBounds().width)
+    gameState.width = game_width;
+    const window_width = config.width
+
+    const bg1_width = gameState.bg1.getBounds().width
+    const bg2_width = gameState.bg2.getBounds().width
+    const bg3_width = gameState.bg3.getBounds().width
+
+    // Set the scroll factor for bg1, bg2, and bg3 here!
+    gameState.bg1.setScrollFactor((bg1_width - window_width) / (game_width - window_width));
+    gameState.bg2.setScrollFactor((bg2_width - window_width) / (game_width - window_width));
+  }
+
   levelSetup() {
     for (const [xIndex, yIndex] of this.heights.entries()) {
       this.createPlatform(xIndex, yIndex);
     } 
     
+    // Create the campfire at the end of the level
     gameState.goal = this.physics.add.sprite(gameState.width - 40, 100, 'campfire');
 
     this.physics.add.overlap(gameState.player, gameState.goal, function() {
-      // Add in the collider that will fade out to the next level here
-			this.cameras.main.fade(800,0,0,0,false, function(camera,progress){
+      this.cameras.main.fade(800, 0, 0, 0, false, function(camera, progress) {
         if (progress > .9) {
+          this.scene.stop(this.levelKey);
           this.scene.start(this.nextLevel[this.levelKey]);
         }
       });
-    }, null, this)
+    }, null, this);
+
   }
 
   update() {
@@ -121,7 +149,7 @@ class Level extends Phaser.Scene {
         gameState.player.anims.play('jump', true);
       }
 
-      if (gameState.player.y > gameState.height) {
+      if (gameState.player.y > gameState.bg3.height) {
         this.cameras.main.shake(240, .01, false, function(camera, progress) {
           if (progress > .9) {
             this.scene.restart(this.levelKey);
@@ -163,8 +191,6 @@ class Level4 extends Level {
 const gameState = {
   speed: 240,
   ups: 380,
-  width: 2000,
-  height: 600,
 };
 
 const config = {
