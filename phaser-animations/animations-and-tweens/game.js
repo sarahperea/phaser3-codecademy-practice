@@ -9,6 +9,9 @@ class GameScene extends Phaser.Scene {
     this.load.image('cave', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/cave_background.png');
     this.load.image('platform', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/platform.png');
     this.load.spritesheet('codey', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/codey_sprite.png', { frameWidth: 72, frameHeight: 90 });
+
+    // Loads in the snowman sprite sheet
+    this.load.spritesheet('snowman', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Cave+Crisis/snowman.png', { frameWidth: 50, frameHeight: 70 });
   }
 
   create() {
@@ -37,13 +40,37 @@ class GameScene extends Phaser.Scene {
       frameRate: 5,
       repeat: -1
     });
-    
-    // Creates Codey's idle animation
+
     this.anims.create({
       key: 'idle',
       frames: this.anims.generateFrameNumbers('codey', { start: 4, end: 5 }),
       frameRate: 5,
       repeat: -1
+    });
+
+    // Creates the snowman sprite
+    gameState.enemy = this.physics.add.sprite(225, 500, 'snowman');
+
+    // Creates a Collider Object between the snowman and the platforms
+    this.physics.add.collider(gameState.enemy, platforms)
+
+    // Creates an animation using the snowman sprite sheet
+    this.anims.create({
+      key: 'snowmanAlert',
+      frames: this.anims.generateFrameNumbers('snowman', { start: 0, end: 3 }),
+      frameRate: 4,
+      repeat: -1
+    });
+
+    // Plays the snowmanAlert animation
+    gameState.enemy.anims.play('snowmanAlert', true)
+
+    // Creates an Overlap object that detects when Codey overlaps with the snowman
+    this.physics.add.overlap(gameState.player, gameState.enemy, () => {
+      // Add your code below:
+			//gameState.enemy.anims.pause();
+      this.anims.pauseAll();
+      
     });
   }
 
@@ -52,19 +79,13 @@ class GameScene extends Phaser.Scene {
       if (gameState.cursors.right.isDown) {
         gameState.player.setVelocityX(350);
         gameState.player.anims.play('run', true);
-        // Add your code for step 2 below:
         gameState.player.flipX = false;
-				
-        
       } else if (gameState.cursors.left.isDown) {
         gameState.player.setVelocityX(-350);
         gameState.player.anims.play('run', true);
-        // Add your code for step 1 below:
-	gameState.player.flipX = true;
-        
+        gameState.player.flipX = true;
       } else {
         gameState.player.setVelocityX(0);
-        // Plays the idle animation if no arrow keys are pressed
         gameState.player.anims.play('idle', true);
       }
     }
