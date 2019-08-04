@@ -85,6 +85,7 @@ function create() {
     this.add.text(180,200,'Game Over', {
       fontSize: '15px', fill: '#00000'
     })
+    gameState.enemyVelocity = 1;
   })
   
   gameState.bugRepellent = this.physics.add.group();
@@ -131,6 +132,7 @@ function update() {
         fontSize: '15px',
         fill: '#000000'
       });
+      gameState.enemyVelocity = 1;
     } else {
       gameState.enemies.getChildren().forEach( (elem) =>
       {
