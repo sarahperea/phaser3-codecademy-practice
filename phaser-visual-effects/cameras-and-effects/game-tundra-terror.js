@@ -1,22 +1,4 @@
 class Level extends Phaser.Scene {
-  createSnow() {
-    // Add in the particle emitters here!
-		gameState.particles = this.add.particles('snowflake');
-    
-    gameState.emitter = gameState.particles.createEmitter({
-      x: {min: 0, max: config.width * 2},
-      y: -5,
-      lifespan: 2000,
-      speedX: { min: -5, max: -200 },
-      speedY: { min: 200, max: 400 },
-      scale: { start: 0.6, end: 0 },
-      quantity: 10,
-      blendMode: 'ADD'
-    });
-    
-    gameState.emitter.setScrollFactor(0);
-  }
-
   constructor(key) {
     super({key});
     this.levelKey = key
@@ -24,6 +6,7 @@ class Level extends Phaser.Scene {
       'Level1': 'Level2',
       'Level2': 'Level3',
       'Level3': 'Level4',
+      'Level4': 'Credits',
     }
   }
 
@@ -43,15 +26,16 @@ class Level extends Phaser.Scene {
     gameState.active = true
 
     gameState.bgColor = this.add.rectangle(0, 0, config.width, config.height, 0x00ffbb).setOrigin(0, 0);
-
+    this.createStars();
     this.createParallaxBackgrounds();
 
     gameState.player = this.physics.add.sprite(125, 110, 'codey').setScale(.5);
-
     gameState.platforms = this.physics.add.staticGroup();
 
     this.createAnimations();
+
     this.createSnow();
+
     this.levelSetup();
 
     this.cameras.main.setBounds(0, 0, gameState.bg3.width, gameState.bg3.height);
@@ -64,6 +48,7 @@ class Level extends Phaser.Scene {
     this.physics.add.collider(gameState.goal, gameState.platforms);
 
     gameState.cursors = this.input.keyboard.createCursorKeys();
+
   }
 
   createPlatform(xIndex, yIndex) {
@@ -72,6 +57,23 @@ class Level extends Phaser.Scene {
       if (typeof yIndex === 'number' && typeof xIndex === 'number') {
         gameState.platforms.create((220 * xIndex),  yIndex * 70, 'platform').setOrigin(0, 0.5).refreshBody();
       }
+  }
+
+  createSnow() {
+    gameState.particles = this.add.particles('snowflake');
+
+    gameState.emitter = gameState.particles.createEmitter({
+      x: {min: 0, max: config.width * 2 },
+      y: -5,
+      lifespan: 2000,
+      speedX: { min:-5, max: -200 },
+      speedY: { min: 200, max: 400 },
+      scale: { start: 0.6, end: 0 },
+      quantity: 10,
+      blendMode: 'ADD'
+    })
+
+    gameState.emitter.setScrollFactor(0);
   }
 
   createAnimations() {
@@ -180,6 +182,24 @@ class Level extends Phaser.Scene {
       }
     }
   }
+  createStars() {
+    gameState.stars = [];
+    function getStarPoints() {
+      const color = 0xffffff;
+      return {
+        x: Math.floor(Math.random() * 900),
+        y: Math.floor(Math.random() * config.height * .5),
+        radius: Math.floor(Math.random() * 3),
+        color,
+      }
+    }
+    for (let i = 0; i < 200; i++) {
+      const { x, y, radius, color} = getStarPoints();
+      const star = this.add.circle(x, y, radius, color)
+      star.setScrollFactor(Math.random() * .1);
+      gameState.stars.push(star)
+    }
+  }
 
   setWeather(weather) {
     const weathers = {
@@ -216,17 +236,17 @@ class Level extends Phaser.Scene {
     gameState.bg1.setTint(color);
     gameState.bg2.setTint(color);
     gameState.bg3.setTint(color);
-    gameState.goal.setTint(color);
     gameState.bgColor.fillColor = bgColor;
-
-    if (gameState.emitter) {
-      // Update this part of the code to set wind and amount of snow!
-
-    }
-
+    gameState.emitter.setQuantity(snow);
+    gameState.emitter.setSpeedX(-wind);
     gameState.player.setTint(color);
     for (let platform of gameState.platforms.getChildren()) {
       platform.setTint(color);
+    }
+    if (weather === 'night') {
+      gameState.stars.forEach(star => star.setVisible(true));
+    } else {
+      gameState.stars.forEach(star => star.setVisible(false));
     }
 
     return
@@ -265,6 +285,33 @@ class Level4 extends Level {
   }
 }
 
+class Credits extends Phaser.Scene {
+  constructor() {
+    super({ key: 'Credits' })
+  }
+
+  preload() {
+    this.load.spritesheet('codey_sled', 'https://s3.amazonaws.com/codecademy-content/courses/learn-phaser/Codey+Tundra/codey_sled.png', { frameWidth: 81, frameHeight: 90 });
+  }
+
+  create() {
+    gameState.player = this.add.sprite(config.width / 2, config.height / 2, 'codey_sled');
+
+    this.anims.create({
+      key: 'sled',
+      frames: this.anims.generateFrameNumbers('codey_sled'),
+      frameRate: 10,
+      repeat: -1
+    })
+
+    gameState.player.angle = 20;
+  }
+
+  update() {
+    gameState.player.anims.play('sled', true);
+  }
+}
+
 const gameState = {
   speed: 240,
   ups: 380,
@@ -284,8 +331,7 @@ const config = {
 
     }
   },
-  scene: [Level1, Level2, Level3, Level4]
+  scene: [Level1, Level2, Level3, Level4, Credits]
 };
 
 const game = new Phaser.Game(config);
-
