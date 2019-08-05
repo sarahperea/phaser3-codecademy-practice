@@ -335,3 +335,12 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+/********************** LESSONS COVERED: **********************/
+/*
+ * Cameras
+ * Special Camera Effects (Fade Out and Shake)
+ * Particle Emitters
+ * Tinted Sprites
+ * Parallax Scrolling
+ */
