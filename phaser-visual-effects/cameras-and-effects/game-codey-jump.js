@@ -26,6 +26,7 @@ class JumpScene extends Phaser.Scene {
   }
 
   create() {
+    
     const graphics = this.add.graphics();
     graphics.fillGradientStyle(0xdadaff, 0x6cfafa, 0xfccaff, 0xdadaff, 1);
     graphics.fillRect(0, 0, gameOptions.width, gameOptions.height);
@@ -89,6 +90,10 @@ class JumpScene extends Phaser.Scene {
     // This can be done by moving the camera but can also be done by moving the world around the player
     if (player.body.y <  gameOptions.height/2) {
       platforms.children.iterate(updateY, this);
+    }
+    
+    if (player.body.touching.down) {
+      this.cameras.main.shake();
     }
   }
 }
