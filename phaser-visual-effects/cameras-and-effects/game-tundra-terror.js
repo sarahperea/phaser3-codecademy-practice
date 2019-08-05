@@ -1,4 +1,22 @@
 class Level extends Phaser.Scene {
+  createSnow() {
+    // Add in the particle emitters here!
+		gameState.particles = this.add.particles('snowflake');
+    
+    gameState.emitter = gameState.particles.createEmitter({
+      x: {min: 0, max: config.width * 2},
+      y: -5,
+      lifespan: 2000,
+      speedX: { min: -5, max: -200 },
+      speedY: { min: 200, max: 400 },
+      scale: { start: 0.6, end: 0 },
+      quantity: 10,
+      blendMode: 'ADD'
+    });
+    
+    gameState.emitter.setScrollFactor(0);
+  }
+
   constructor(key) {
     super({key});
     this.levelKey = key
@@ -33,6 +51,7 @@ class Level extends Phaser.Scene {
     gameState.platforms = this.physics.add.staticGroup();
 
     this.createAnimations();
+    this.createSnow();
     this.levelSetup();
 
     this.cameras.main.setBounds(0, 0, gameState.bg3.width, gameState.bg3.height);
@@ -167,36 +186,50 @@ class Level extends Phaser.Scene {
 
       'morning': {
         'color': 0xecdccc,
+        'snow':  1,
+        'wind':  20,
         'bgColor': 0xF8c3aC,
       },
 
       'afternoon': {
         'color': 0xffffff,
+        'snow':  1,
+        'wind': 80,
         'bgColor': 0x0571FF,
       },
 
       'twilight': {
         'color': 0xccaacc,
         'bgColor': 0x18235C,
+        'snow':  10,
+        'wind': 200,
       },
 
       'night': {
         'color': 0x555555,
         'bgColor': 0x000000,
+        'snow':  0,
+        'wind': 0,
       },
     }
-    let { color, bgColor } = weathers[weather];
-    gameState.bgColor.fillColor = bgColor;
-
-    // Add .setTint() for all the GameObjects here!
-		gameState.bg1.setTint(color);
+    let { color, bgColor, snow, wind } = weathers[weather];
+    gameState.bg1.setTint(color);
     gameState.bg2.setTint(color);
     gameState.bg3.setTint(color);
+    gameState.goal.setTint(color);
+    gameState.bgColor.fillColor = bgColor;
+
+    if (gameState.emitter) {
+      // Update this part of the code to set wind and amount of snow!
+
+    }
+
     gameState.player.setTint(color);
-  
     for (let platform of gameState.platforms.getChildren()) {
       platform.setTint(color);
     }
+
+    return
   }
 }
 
