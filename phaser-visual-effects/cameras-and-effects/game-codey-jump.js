@@ -26,7 +26,7 @@ class JumpScene extends Phaser.Scene {
   }
 
   create() {
-    
+    particles = this.add.particles('stripe');
     const graphics = this.add.graphics();
     graphics.fillGradientStyle(0xdadaff, 0x6cfafa, 0xfccaff, 0xdadaff, 1);
     graphics.fillRect(0, 0, gameOptions.width, gameOptions.height);
@@ -94,6 +94,18 @@ class JumpScene extends Phaser.Scene {
     
     if (player.body.touching.down) {
       this.cameras.main.shake();
+    }
+    
+    if (platformCount > 10 && !emitter) {
+      particles.createEmitter({
+        x: { min: 0, max: gameOptions.width },
+        y: gameOptions.height + 10,
+        lifespan: 2500,
+        speedY: { min: -300, max: -500 },
+        scale: .5,
+        quantity: 5,
+        blendMode: 'ADD'
+      });
     }
   }
 }
