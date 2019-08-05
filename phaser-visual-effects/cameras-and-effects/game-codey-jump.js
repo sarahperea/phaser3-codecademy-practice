@@ -26,6 +26,10 @@ class JumpScene extends Phaser.Scene {
   }
 
   create() {
+    const graphics = this.add.graphics();
+    graphics.fillGradientStyle(0xdadaff, 0x6cfafa, 0xfccaff, 0xdadaff, 1);
+    graphics.fillRect(0, 0, gameOptions.width, gameOptions.height);
+    
     this.anims.create({
       key: 'jump',
       frames: this.anims.generateFrameNumbers('codey', { start: 2, end: 3 }),
