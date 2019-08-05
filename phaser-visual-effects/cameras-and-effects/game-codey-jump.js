@@ -142,3 +142,9 @@ function updateY(platform){
     platformCount += 1;
   }
 }
+
+/********************** NEXT STEPS *************************/
+
+/*
+ * UP TO YOUUUUUUU!
+ */
