@@ -26,6 +26,12 @@ class JumpScene extends Phaser.Scene {
   }
 
   create() {
+    this.anims.create({
+      key: 'jump',
+      frames: this.anims.generateFrameNumbers('codey', { start: 2, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
 
     this.physics.world.setBounds(0, 0, 480, 640);
     platforms = this.physics.add.group({
@@ -52,13 +58,17 @@ class JumpScene extends Phaser.Scene {
   }
 
   update(){
+    player.anims.play('jump', true);
+    
     if (cursors.left.isDown)
     {
       player.setVelocityX(-240); // we want to apply a negative x velocity to go left on the screen
+      player.flipX = true;
     }
     else if (cursors.right.isDown)
     {
       player.setVelocityX(240); // we want to apply a positive x velocity to go right on the screen
+      player.flipX = false;
     }
     else
     {   
