@@ -1,5 +1,5 @@
 # Game Development with Phaser 3 (Codecademy)
-> Phaser 3 basics practice
+> Phaser 3 practice
 
 'Coz practice makes perfect! ;-)
 
