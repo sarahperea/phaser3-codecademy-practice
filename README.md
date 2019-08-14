@@ -5,10 +5,11 @@
 
 Got addicted with Phaser 3 and was able to finish this tutorial within 7 days. <3
 
-### To run:
+### To run a game:
 
 - Make sure you have [http-server](https://www.npmjs.com/package/http-server) or any other web server you want. 
-- Navigate to a game's source folder:
+- Clone this repository.
+- Navigate to a game's source folder (this example is for http-server):
 
   `cd  phaser-visual-effects/cameras-and-effects/tundra-terror`
 
